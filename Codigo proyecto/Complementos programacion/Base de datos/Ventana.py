@@ -2,11 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 import sqlite3
 
-# Conectar a la base de datos (o crearla si no existe)
 conn = sqlite3.connect('objetos.db')
 c = conn.cursor()
 
-# Crear la tabla si no existe
 c.execute('''CREATE TABLE IF NOT EXISTS objetos (
                 id TEXT PRIMARY KEY,
                 nombre TEXT,
@@ -16,17 +14,14 @@ c.execute('''CREATE TABLE IF NOT EXISTS objetos (
             )''')
 conn.commit()
 
-# Función para registrar un nuevo objeto
 def registrar_objeto():
     def guardar_objeto():
-        # Obtener datos del formulario
         objeto_id = entry_id.get()
         nombre = entry_nombre.get()
         autor = entry_autor.get()
         celular = entry_celular.get()
         correo = entry_correo.get()
 
-        # Insertar datos en la base de datos
         try:
             c.execute("INSERT INTO objetos (id, nombre, autor, celular, correo) VALUES (?, ?, ?, ?, ?)",
                       (objeto_id, nombre, autor, celular, correo))
@@ -36,7 +31,6 @@ def registrar_objeto():
         except sqlite3.IntegrityError:
             messagebox.showerror("Error", "El ID ya existe. Por favor, ingrese un ID único.")
 
-    # Crear ventana para el registro
     reg_window = tk.Toplevel(root)
     reg_window.title("Registrar Objeto")
 
@@ -61,10 +55,8 @@ def registrar_objeto():
     entry_correo = tk.Entry(reg_window)
     entry_correo.grid(row=4, column=1)
 
-    # Botón para guardar el objeto
     tk.Button(reg_window, text="Guardar", command=guardar_objeto).grid(row=5, column=0, columnspan=2, pady=10)
 
-# Función para buscar por número de ID
 def buscar_por_etiqueta():
     def realizar_busqueda():
         id_buscar = entry_id_buscar.get()
@@ -78,7 +70,6 @@ def buscar_por_etiqueta():
             messagebox.showwarning("No encontrado", f"No hay ningún objeto con ID {id_buscar}")
         buscar_window.destroy()
 
-    # Crear ventana para buscar por ID
     buscar_window = tk.Toplevel(root)
     buscar_window.title("Buscar por ID")
     
@@ -88,7 +79,6 @@ def buscar_por_etiqueta():
     
     tk.Button(buscar_window, text="Buscar", command=realizar_busqueda).grid(row=1, column=0, columnspan=2, pady=10)
 
-# Función para realizar cambios por ID
 def realizar_cambios():
     def buscar_y_cambiar():
         id_cambiar = entry_id_cambiar.get()
@@ -108,7 +98,6 @@ def realizar_cambios():
                 messagebox.showinfo("Cambios realizados", "Los cambios se han guardado exitosamente.")
                 cambios_window.destroy()
 
-            # Crear ventana para modificar los datos
             cambios_window = tk.Toplevel(root)
             cambios_window.title("Modificar Objeto")
 
@@ -140,7 +129,6 @@ def realizar_cambios():
         else:
             messagebox.showwarning("No encontrado", f"No hay ningún objeto con ID {id_cambiar}")
 
-    # Crear ventana para buscar por ID y realizar cambios
     modificar_window = tk.Toplevel(root)
     modificar_window.title("Modificar por ID")
 
@@ -150,7 +138,6 @@ def realizar_cambios():
 
     tk.Button(modificar_window, text="Buscar y Modificar", command=buscar_y_cambiar).grid(row=1, column=0, columnspan=2, pady=10)
 
-# Función para ver la lista de todos los objetos
 def ver_lista_objetos():
     lista_window = tk.Toplevel(root)
     lista_window.title("Lista de Objetos")
@@ -162,7 +149,6 @@ def ver_lista_objetos():
             detalle_window = tk.Toplevel(lista_window)
             detalle_window.title(f"Detalle del objeto {id_objeto}")
             
-            # Mostrar información detallada
             detalle_texto = f'ID: {objeto[0]}\nNombre: {objeto[1]}\nAutor: {objeto[2]}\nCelular: {objeto[3]}\nCorreo: {objeto[4]}'
             tk.Label(detalle_window, text=detalle_texto, justify="left").grid(row=0, column=0, padx=10, pady=10)
             
@@ -170,7 +156,6 @@ def ver_lista_objetos():
             tk.Button(detalle_window, text="Regresar a la lista", command=detalle_window.destroy).grid(row=1, column=0, pady=10)
             tk.Button(detalle_window, text="Salir al menú principal", command=lista_window.destroy).grid(row=2, column=0, pady=10)
 
-    # Obtener todos los objetos de la base de datos
     c.execute("SELECT * FROM objetos")
     objetos = c.fetchall()
 
@@ -183,15 +168,16 @@ def ver_lista_objetos():
     else:
         tk.Label(lista_window, text="No hay objetos registrados.", font=("Arial", 14)).grid(row=0, column=0, padx=10, pady=10)
 
-# Crear ventana principal
+def salir():
+    root.quit()
+
 root = tk.Tk()
 root.title("Menú Principal")
 
-# Crear botones para las opciones del menú
 tk.Button(root, text="Registrar nuevo objeto", command=registrar_objeto).pack(pady=10)
 tk.Button(root, text="Buscar por ID", command=buscar_por_etiqueta).pack(pady=10)
 tk.Button(root, text="Modificar por ID", command=realizar_cambios).pack(pady=10)
 tk.Button(root, text="Ver lista de objetos", command=ver_lista_objetos).pack(pady=10)
+tk.Button(root, text="Salir", command=salir).pack(pady=10)
 
-# Iniciar el bucle de la interfaz gráfica
 root.mainloop()
