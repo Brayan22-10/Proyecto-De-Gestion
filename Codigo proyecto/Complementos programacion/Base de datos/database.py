@@ -36,3 +36,15 @@ def obtener_todos_los_objetos():
 
 def cerrar_conexion():
     conn.close()
+
+def obtener_objetos_ordenados():
+    conexion = sqlite3.connect('tu_base_de_datos.db') 
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT * FROM objetos ORDER BY id")
+    objetos = cursor.fetchall()
+
+    conexion.close()
+
+    lista_objetos = [{'id': obj[0], 'nombre': obj[1]} for obj in objetos]  
+    return lista_objetos
