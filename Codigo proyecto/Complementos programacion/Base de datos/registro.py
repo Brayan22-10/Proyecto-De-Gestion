@@ -4,11 +4,15 @@ import database
 
 def registrar_objeto(root):
     def guardar_objeto():
-        objeto_id = entry_id.get()
-        nombre = entry_nombre.get()
-        autor = entry_autor.get()
-        celular = entry_celular.get()
-        correo = entry_correo.get()
+        objeto_id = entry_id.get().strip()
+        nombre = entry_nombre.get().strip()
+        autor = entry_autor.get().strip()
+        celular = entry_celular.get().strip()
+        correo = entry_correo.get().strip()
+
+        if not objeto_id or not nombre or not autor or not celular or not correo:
+            messagebox.showwarning("Campo vacío", "Por favor, complete todos los campos.")
+            return  
 
         try:
             database.insertar_objeto(objeto_id, nombre, autor, celular, correo)

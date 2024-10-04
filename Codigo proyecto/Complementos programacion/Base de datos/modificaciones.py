@@ -4,16 +4,25 @@ import database
 
 def realizar_cambios(root):
     def buscar_y_cambiar():
-        id_cambiar = entry_id_cambiar.get()
+        id_cambiar = entry_id_cambiar.get().strip()  
+
+        if not id_cambiar:
+            messagebox.showwarning("Campo vacío", "Por favor, ingrese un ID.")
+            return  
+
         objeto = database.buscar_objeto(id_cambiar)
-        
+
         if objeto:
             def guardar_cambios():
-                nuevo_nombre = entry_nombre.get()
-                nuevo_autor = entry_autor.get()
-                nuevo_celular = entry_celular.get()
-                nuevo_correo = entry_correo.get()
-                
+                nuevo_nombre = entry_nombre.get().strip()
+                nuevo_autor = entry_autor.get().strip()
+                nuevo_celular = entry_celular.get().strip()
+                nuevo_correo = entry_correo.get().strip()
+
+                if not nuevo_nombre or not nuevo_autor or not nuevo_celular or not nuevo_correo:
+                    messagebox.showwarning("Campo vacío", "Por favor, complete todos los campos.")
+                    return  # No continuar si hay campos vacíos
+
                 database.actualizar_objeto(id_cambiar, nuevo_nombre, nuevo_autor, nuevo_celular, nuevo_correo)
                 messagebox.showinfo("Cambios realizados", "Los cambios se han guardado exitosamente.")
                 cambios_window.destroy()
@@ -45,7 +54,6 @@ def realizar_cambios(root):
             entry_correo.grid(row=4, column=1)
 
             tk.Button(cambios_window, text="Guardar Cambios", command=guardar_cambios).grid(row=5, column=0, columnspan=2, pady=10)
-            modificar_window.destroy()
         else:
             messagebox.showwarning("No encontrado", f"No hay ningún objeto con ID {id_cambiar}")
 
