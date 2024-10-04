@@ -150,27 +150,48 @@ def realizar_cambios():
 
     tk.Button(modificar_window, text="Buscar y Modificar", command=buscar_y_cambiar).grid(row=1, column=0, columnspan=2, pady=10)
 
-# Función para salir de la aplicación
-def salir():
-    conn.close()  # Cerrar la conexión a la base de datos
-    root.destroy()
+# Función para ver la lista de todos los objetos
+def ver_lista_objetos():
+    lista_window = tk.Toplevel(root)
+    lista_window.title("Lista de Objetos")
 
-# Ventana principal
+    def mostrar_detalle(id_objeto):
+        c.execute("SELECT * FROM objetos WHERE id = ?", (id_objeto,))
+        objeto = c.fetchone()
+        if objeto:
+            detalle_window = tk.Toplevel(lista_window)
+            detalle_window.title(f"Detalle del objeto {id_objeto}")
+            
+            # Mostrar información detallada
+            detalle_texto = f'ID: {objeto[0]}\nNombre: {objeto[1]}\nAutor: {objeto[2]}\nCelular: {objeto[3]}\nCorreo: {objeto[4]}'
+            tk.Label(detalle_window, text=detalle_texto, justify="left").grid(row=0, column=0, padx=10, pady=10)
+            
+            # Botones para regresar o salir
+            tk.Button(detalle_window, text="Regresar a la lista", command=detalle_window.destroy).grid(row=1, column=0, pady=10)
+            tk.Button(detalle_window, text="Salir al menú principal", command=lista_window.destroy).grid(row=2, column=0, pady=10)
+
+    # Obtener todos los objetos de la base de datos
+    c.execute("SELECT * FROM objetos")
+    objetos = c.fetchall()
+
+    if objetos:
+        tk.Label(lista_window, text="Seleccione un objeto para ver detalles:", font=("Arial", 14)).grid(row=0, column=0, padx=10, pady=10)
+
+        # Crear botones para cada objeto
+        for index, objeto in enumerate(objetos):
+            tk.Button(lista_window, text=f"ID: {objeto[0]} - {objeto[1]}", command=lambda id=objeto[0]: mostrar_detalle(id)).grid(row=index+1, column=0, padx=10, pady=5)
+    else:
+        tk.Label(lista_window, text="No hay objetos registrados.", font=("Arial", 14)).grid(row=0, column=0, padx=10, pady=10)
+
+# Crear ventana principal
 root = tk.Tk()
-root.title("Gestión de Objetos")
+root.title("Menú Principal")
 
-# Botones en la ventana principal
-btn_registrar = tk.Button(root, text="Registrar", command=registrar_objeto)
-btn_registrar.grid(row=0, column=0, padx=20, pady=20)
+# Crear botones para las opciones del menú
+tk.Button(root, text="Registrar nuevo objeto", command=registrar_objeto).pack(pady=10)
+tk.Button(root, text="Buscar por ID", command=buscar_por_etiqueta).pack(pady=10)
+tk.Button(root, text="Modificar por ID", command=realizar_cambios).pack(pady=10)
+tk.Button(root, text="Ver lista de objetos", command=ver_lista_objetos).pack(pady=10)
 
-btn_buscar = tk.Button(root, text="Buscar por Etiqueta (ID)", command=buscar_por_etiqueta)
-btn_buscar.grid(row=0, column=1, padx=20, pady=20)
-
-btn_cambios = tk.Button(root, text="Realizar Cambios por ID", command=realizar_cambios)
-btn_cambios.grid(row=1, column=0, padx=20, pady=20)
-
-btn_salir = tk.Button(root, text="Salir", command=salir)
-btn_salir.grid(row=1, column=1, padx=20, pady=20)
-
-# Iniciar la aplicación
+# Iniciar el bucle de la interfaz gráfica
 root.mainloop()
