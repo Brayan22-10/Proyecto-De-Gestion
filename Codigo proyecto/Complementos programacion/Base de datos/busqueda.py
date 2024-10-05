@@ -13,7 +13,7 @@ def buscar_por_etiqueta(root):
         objeto = database.buscar_objeto(id_buscar)
 
         if objeto:
-            resultado = f'ID: {objeto[0]}\nNombre: {objeto[1]}\nAutor: {objeto[2]}\nCelular: {objeto[3]}\nCorreo: {objeto[4]}'
+            resultado = f'ID: {objeto[0]}\nNombre: {objeto[1]}\nAutor: {objeto[2]}\nCelular: {objeto[3]}'
             messagebox.showinfo("Objeto encontrado", resultado)
         else:
             messagebox.showwarning("No encontrado", f"No hay ningún objeto con ID {id_buscar}")

@@ -7,10 +7,10 @@ def ver_lista_objetos(root):
 
     def mostrar_detalle(id_objeto):
         objeto = database.buscar_objeto(id_objeto)
-        detalle = f"ID: {objeto[0]}\nNombre: {objeto[1]}\nAutor: {objeto[2]}\nCelular: {objeto[3]}\nCorreo: {objeto[4]}"
+        detalle = f"ID: {objeto[0]}\nNombre: {objeto[1]}\nAutor: {objeto[2]}\nCelular: {objeto[3]}"
         detalle_label.config(text=detalle)
 
-    objetos = database.obtener_todos_los_objetos()  
+    objetos = database.obtener_todos_los_objetos()
 
     tk.Label(lista_window, text="Objetos Registrados", font=("Arial", 14)).grid(row=0, column=0, padx=10, pady=10)
 

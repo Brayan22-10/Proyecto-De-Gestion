@@ -8,14 +8,13 @@ def registrar_objeto(root):
         nombre = entry_nombre.get().strip()
         autor = entry_autor.get().strip()
         celular = entry_celular.get().strip()
-        correo = entry_correo.get().strip()
 
-        if not objeto_id or not nombre or not autor or not celular or not correo:
+        if not objeto_id or not nombre or not autor or not celular:
             messagebox.showwarning("Campo vacío", "Por favor, complete todos los campos.")
             return  
 
         try:
-            database.insertar_objeto(objeto_id, nombre, autor, celular, correo)
+            database.insertar_objeto(objeto_id, nombre, autor, celular)
             messagebox.showinfo("Registro", "El objeto ha sido registrado exitosamente.")
             reg_window.destroy()
         except ValueError:
@@ -40,8 +39,4 @@ def registrar_objeto(root):
     entry_celular = tk.Entry(reg_window)
     entry_celular.grid(row=3, column=1)
 
-    tk.Label(reg_window, text="Correo").grid(row=4, column=0, padx=10, pady=10)
-    entry_correo = tk.Entry(reg_window)
-    entry_correo.grid(row=4, column=1)
-
-    tk.Button(reg_window, text="Guardar", command=guardar_objeto).grid(row=5, column=0, columnspan=2, pady=10)
+    tk.Button(reg_window, text="Guardar", command=guardar_objeto).grid(row=4, column=0, columnspan=2, pady=10)

@@ -9,14 +9,14 @@ def crear_tabla():
                     nombre TEXT,
                     autor TEXT,
                     celular TEXT,
-                    correo TEXT
+                    verificado INTEGER DEFAULT 0  -- 0: Pendiente, 1: Verificado
                 )''')
     conn.commit()
 
-def insertar_objeto(id, nombre, autor, celular, correo):
+def insertar_objeto(id, nombre, autor, celular):
     try:
-        c.execute("INSERT INTO objetos (id, nombre, autor, celular, correo) VALUES (?, ?, ?, ?, ?)",
-                  (id, nombre, autor, celular, correo))
+        c.execute("INSERT INTO objetos (id, nombre, autor, celular) VALUES (?, ?, ?, ?) ",
+                  (id, nombre, autor, celular))
         conn.commit()
     except sqlite3.IntegrityError:
         raise ValueError("ID duplicado")
@@ -25,9 +25,9 @@ def buscar_objeto(id):
     c.execute("SELECT * FROM objetos WHERE id = ?", (id,))
     return c.fetchone()
 
-def actualizar_objeto(id, nombre, autor, celular, correo):
-    c.execute("UPDATE objetos SET nombre = ?, autor = ?, celular = ?, correo = ? WHERE id = ?",
-              (nombre, autor, celular, correo, id))
+def actualizar_objeto(id, nombre, autor, celular):
+    c.execute("UPDATE objetos SET nombre = ?, autor = ?, celular = ? WHERE id = ?",
+              (nombre, autor, celular, id))
     conn.commit()
 
 def obtener_todos_los_objetos():
@@ -38,13 +38,13 @@ def cerrar_conexion():
     conn.close()
 
 def obtener_objetos_ordenados():
-    conexion = sqlite3.connect('tu_base_de_datos.db') 
-    cursor = conexion.cursor()
+    c.execute("SELECT * FROM objetos ORDER BY id")
+    return c.fetchall()
 
-    cursor.execute("SELECT * FROM objetos ORDER BY id")
-    objetos = cursor.fetchall()
+def obtener_pendientes():
+    c.execute("SELECT * FROM objetos WHERE verificado = 0")
+    return c.fetchall()
 
-    conexion.close()
-
-    lista_objetos = [{'id': obj[0], 'nombre': obj[1]} for obj in objetos]  
-    return lista_objetos
+def marcar_como_verificado(objeto_id):
+    c.execute("UPDATE objetos SET verificado = 1 WHERE id = ?", (objeto_id,))
+    conn.commit()
