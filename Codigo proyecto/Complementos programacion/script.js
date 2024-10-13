@@ -20,20 +20,32 @@ document.addEventListener('DOMContentLoaded', () => {
         // Añade más productos aquí
     ];
 
-    // Mostrar detalles del producto
-    const params = new URLSearchParams(window.location.search);
-    const nombreProducto = params.get('nombre');
-    const productoEncontrado = productos.find(producto => producto.nombre === nombreProducto);
+    const productContainer = document.getElementById('productContainer');
+    const buscador = document.getElementById('buscador');
 
-    if (productoEncontrado) {
-        document.getElementById('nombreProducto').innerText = productoEncontrado.nombre;
-        document.getElementById('imagenProducto').src = productoEncontrado.imagen;
-        document.getElementById('descripcionProducto').innerText = productoEncontrado.descripcion;
-        document.getElementById('vendedorProducto').innerText = `Vendedor: ${productoEncontrado.vendedor}`;
-        document.getElementById('telefonoProducto').innerText = `Teléfono: ${productoEncontrado.telefono}`;
-        document.getElementById('lugarProducto').innerText = `Lugar: ${productoEncontrado.lugar}`;
-        document.getElementById('correoProducto').innerText = `Correo: ${productoEncontrado.correo}`;
-    } else {
-        document.getElementById('detalleProducto').innerText = 'Producto no encontrado.';
+    function mostrarProductos(productosFiltrados) {
+        productContainer.innerHTML = '';
+        productosFiltrados.forEach(producto => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product');
+            productElement.innerHTML = `
+                <img src="${producto.imagen}" alt="${producto.nombre}">
+                <h2>${producto.nombre}</h2>
+                <p>${producto.descripcion}</p>
+                <a href="detalle_producto.html?nombre=${producto.nombre}">Más Detalles</a>
+            `;
+            productContainer.appendChild(productElement);
+        });
     }
+
+    buscador.addEventListener('input', (e) => {
+        const texto = e.target.value.toLowerCase();
+        const productosFiltrados = productos.filter(producto =>
+            producto.nombre.toLowerCase().includes(texto) ||
+            producto.descripcion.toLowerCase().includes(texto)
+        );
+        mostrarProductos(productosFiltrados);
+    });
+
+    mostrarProductos(productos);
 });
