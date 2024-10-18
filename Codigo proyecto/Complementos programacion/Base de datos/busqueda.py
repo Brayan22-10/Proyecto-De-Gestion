@@ -26,3 +26,5 @@ def buscar_por_etiqueta(root):
     entry_id_buscar.grid(row=0, column=1)
 
     tk.Button(buscar_window, text="Buscar", command=realizar_busqueda).grid(row=1, column=0, columnspan=2, pady=10)
+ 
+ 
