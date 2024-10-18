@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
             correo: 'vendedor2@correo.com',
             vendedor: 'Vendedor 2'
         },
-        // Añade más productos aquí
     ];
 
     const productContainer = document.getElementById('productContainer');
@@ -32,8 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${producto.imagen}" alt="${producto.nombre}">
                 <h2>${producto.nombre}</h2>
                 <p>${producto.descripcion}</p>
-                <a href="detalle_producto.html?nombre=${producto.nombre}">Más Detalles</a>
+                <button class="detalle-btn">Más Detalles</button>
+                <div class="detalles-producto" style="display: none;">
+                    <p>Vendedor: ${producto.vendedor}</p>
+                    <p>Teléfono: ${producto.telefono}</p>
+                    <p>Lugar: ${producto.lugar}</p>
+                    <p>Correo: ${producto.correo}</p>
+                </div>
             `;
+
+            const detalleBtn = productElement.querySelector('.detalle-btn');
+            const detallesProducto = productElement.querySelector('.detalles-producto');
+
+            detalleBtn.addEventListener('click', () => {
+                if (detallesProducto.style.display === 'none') {
+                    detallesProducto.style.display = 'block';
+                    detalleBtn.textContent = 'Ocultar Detalles';
+                } else {
+                    detallesProducto.style.display = 'none';
+                    detalleBtn.textContent = 'Más Detalles';
+                }
+            });
+
             productContainer.appendChild(productElement);
         });
     }
